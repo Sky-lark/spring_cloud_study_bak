@@ -1,6 +1,7 @@
-package com.leyou.repository;
+package com.leyou.search.repository;
 
+import com.leyou.search.pojo.Goods;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
-public class GoodsRepository extends ElasticsearchRepository<Goods> {
+public interface GoodsRepository extends ElasticsearchRepository<Goods,Long> {
 }

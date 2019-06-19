@@ -16,13 +16,25 @@ public class SpecificationController {
     @Autowired
     private SpecificationService service;
 
+    /**
+     * @param cid 分类id
+     * @return
+     */
     @GetMapping("groups/{cid}")
     public ResponseEntity<List<SpecGroup>> querySpecGroupByCid(@PathVariable("cid") Long cid) {
         return ResponseEntity.ok(service.querySpecGroupByCid(cid));
     }
 
+    /**
+     * @param gid 组id
+     * @param cid 分类id
+     * @param searching 是否搜索
+     * @return
+     */
     @GetMapping("params")
-    public ResponseEntity<List<SpecParam>> querySpecParamsByGid(@RequestParam("gid") Long gid) {
-        return ResponseEntity.ok(service.querySpecParamsByGid(gid));
+    public ResponseEntity<List<SpecParam>> querySpecParamsList(@RequestParam(value = "gid", required = false) Long gid,
+                                                                @RequestParam(value = "cid", required = false) Long cid,
+                                                                @RequestParam(value = "searching", required = false) Boolean searching) {
+        return ResponseEntity.ok(service.querySpecParamsList(gid,cid,searching));
     }
 }
