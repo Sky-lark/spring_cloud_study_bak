@@ -44,4 +44,13 @@ public class GoodsController {
     public ResponseEntity<List<Sku>> querySkuBySpuId(@RequestParam("id") Long id) {
         return ResponseEntity.ok(service.querySkuBySpuId(id));
     }
+
+    @GetMapping("spu/{id}")
+    public ResponseEntity<Spu> querySpuById(@PathVariable("id") Long id){
+        Spu spu = this.service.querySpuById(id);
+        if(spu == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(spu);
+    }
 }

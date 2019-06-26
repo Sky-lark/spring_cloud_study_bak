@@ -129,13 +129,27 @@ public class GoodsService {
         Sku sku = new Sku();
         sku.setSpuId(id);
         List<Sku> skus = skuMapper.select(sku);
-        if(CollectionUtils.isEmpty(skus)){
+        if (CollectionUtils.isEmpty(skus)) {
             throw new LyException(ExceptionEnum.SKU_NOT_FOUND);
         }
         List<Long> ids = skus.stream().map(Sku::getId).collect(Collectors.toList());
         List<Stock> stocks = stockMapper.selectByIdList(ids);
         Map<Long, Integer> stockMap = stocks.stream().collect(Collectors.toMap(Stock::getSkuId, Stock::getStock));
-        skus.forEach(s->s.setStock(stockMap.get(s.getId())));
+        skus.forEach(s -> s.setStock(stockMap.get(s.getId())));
         return skus;
+    }
+
+    public Spu querySpuById(Long id) {
+        // 查询spu
+        Spu spu = spuMapper.selectByPrimaryKey(id);
+        if (spu == null) {
+            throw new LyException(ExceptionEnum.GOODS_NOT_FOUND);
+        }
+        // 查询sku
+        List<Sku> skus = querySkuBySpuId(id);
+        spu.setSkus(skus);
+        // 查询detail
+        spu.setSpuDetail(querySpuDetailById(id));
+        return spu;
     }
 }

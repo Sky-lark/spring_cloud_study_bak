@@ -81,7 +81,7 @@ public class SearchService {
             map.put("id", sku.getId());
             map.put("title", sku.getTitle());
             map.put("price", sku.getPrice());
-            map.put("images", StringUtils.split(sku.getImages(), ","));
+            map.put("image", StringUtils.substringBefore(sku.getImages(),","));
             skuList.add(map);
             priceSet.add(sku.getPrice());
         }
@@ -108,12 +108,12 @@ public class SearchService {
             Object value = "";
             if (param.getGeneric()) {
                 // 判断是否是数字类型
-                if(param.getNumeric()){
+                if (param.getNumeric()) {
                     // 如果是，处理成区间断
-                    value = chooseSegment(value.toString(),param);
+                    value = chooseSegment(value.toString(), param);
                 }
                 value = genericSpec.get(param.getId());
-            }else {
+            } else {
                 value = specialSpec.get(param.getId());
             }
             specMap.put(key, value);
@@ -124,6 +124,7 @@ public class SearchService {
 
     /**
      * 判断区间
+     *
      * @param value
      * @param p
      * @return
@@ -133,20 +134,20 @@ public class SearchService {
         String result = "其它";
         // 保存数值段
         for (String segment : p.getSegments().split(",")) {
-                String[] segs = segment.split("-");
+            String[] segs = segment.split("-");
             // 获取数值范围
             double begin = NumberUtils.toDouble(segs[0]);
             double end = Double.MAX_VALUE;
-            if(segs.length == 2){
+            if (segs.length == 2) {
                 end = NumberUtils.toDouble(segs[1]);
             }
             // 判断是否在范围内
-            if(val >= begin && val < end){
-                if(segs.length == 1){
+            if (val >= begin && val < end) {
+                if (segs.length == 1) {
                     result = segs[0] + p.getUnit() + "以上";
-                }else if(begin == 0){
+                } else if (begin == 0) {
                     result = segs[1] + p.getUnit() + "以下";
-                }else{
+                } else {
                     result = segment + p.getUnit();
                 }
                 break;
@@ -156,22 +157,22 @@ public class SearchService {
     }
 
     public PageResult<Goods> search(SearchRequest request) {
-        int page = request.getPage();
+        int page = request.getPage() - 1;
         int size = request.getSize();
         // 创建查询构建器
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         // 结果过滤
-        nativeSearchQueryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id","subTitle","skus"},null));
+        nativeSearchQueryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id", "subTitle", "skus"}, null));
         // 分页
         nativeSearchQueryBuilder.withPageable(PageRequest.of(page, size));
         // 过滤
-        nativeSearchQueryBuilder.withQuery(QueryBuilders.matchQuery("all",request.getKey()));
+        nativeSearchQueryBuilder.withQuery(QueryBuilders.matchQuery("all", request.getKey()));
         // 查询
         Page<Goods> result = goodsRepository.search(nativeSearchQueryBuilder.build());
         // 解析
         int totalPages = result.getTotalPages();
         long totalElements = result.getTotalElements();
         List<Goods> goodsList = result.getContent();
-        return new PageResult<>(totalElements,  totalPages, goodsList);
+        return new PageResult<>(totalElements, totalPages, goodsList);
     }
 }

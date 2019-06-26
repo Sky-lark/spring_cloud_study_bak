@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SpecificationService {
@@ -41,4 +44,27 @@ public class SpecificationService {
         }
         return specParams;
     }
+
+
+    public List<SpecGroup> queryAllByCid(Long cid) {
+        // 查询规格组
+        List<SpecGroup> specGroups = querySpecGroupByCid(cid);
+        // 查询当前分类内参数
+        List<SpecParam> specParams = querySpecParamsList(null, cid, null);
+        // 填充params到group
+        // 先把组id变成map的key，值变成组下的参数
+        Map<Long, List<SpecParam>> paramMap = new HashMap<>();
+        for (SpecParam param : specParams) {
+            if (!paramMap.containsKey(param.getGroupId())){
+                // 组id再map中不存在
+                paramMap.put(param.getGroupId(), new ArrayList<>());
+            }
+            paramMap.get(param.getGroupId()).add(param);
+        }
+        for (SpecGroup specGroup : specGroups) {
+            specGroup.setParams(paramMap.get(specGroup.getId()));
+        }
+        return specGroups;
+    }
+
 }
