@@ -3,6 +3,7 @@ package com.leyou.search.web;
 import com.leyou.common.vo.PageResult;
 import com.leyou.search.pojo.Goods;
 import com.leyou.search.pojo.SearchRequest;
+import com.leyou.search.pojo.SearchResult;
 import com.leyou.search.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class SearchController {
     @Autowired
     private SearchService service;
     @PostMapping("page")
-    public ResponseEntity<PageResult<Goods>> search(@RequestBody SearchRequest searchRequest){
+    public ResponseEntity<SearchResult> search(@RequestBody SearchRequest searchRequest){
         return ResponseEntity.ok(service.search(searchRequest));
     };
 }
