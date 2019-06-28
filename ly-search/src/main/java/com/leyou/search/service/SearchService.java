@@ -16,6 +16,8 @@ import com.leyou.search.repository.GoodsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.lucene.queryparser.xml.builders.BooleanQueryBuilder;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -182,11 +184,12 @@ public class SearchService {
         // 创建查询构建器
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
         // 结果过滤
-        nativeSearchQueryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id", "subTitle", "skus"}, null));
+        nativeSearchQueryBuilder.withSourceFilter(
+                new FetchSourceFilter(new String[]{"id", "subTitle", "skus"}, null));
         // 分页
         nativeSearchQueryBuilder.withPageable(PageRequest.of(page, size));
         // 过滤
-        QueryBuilder basicQuery  = QueryBuilders.matchQuery("all", request.getKey());
+        QueryBuilder basicQuery = buildBasicQuery(request);
         nativeSearchQueryBuilder.withQuery(basicQuery);
         // ----聚合分类和品牌信息
         // 聚合分类
@@ -209,9 +212,24 @@ public class SearchService {
         List<Map<String, Object>> specs = null;
         if (categories != null && categories.size() == 1) {
             // 商品分类为1 开始聚合规格参数
-            specs = buildSpecificationAgg(categories.get(0).getId(),basicQuery);
+            specs = buildSpecificationAgg(categories.get(0).getId(), basicQuery);
         }
-        return new SearchResult(totalElements, totalPages, goodsList,categories,brands,specs);
+        return new SearchResult(totalElements, totalPages, goodsList, categories, brands, specs);
+    }
+
+    private QueryBuilder buildBasicQuery(SearchRequest request) {
+        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
+        queryBuilder.must(QueryBuilders.matchQuery("key", request.getKey()));
+        Map<String, String> filter = request.getFilter();
+        for (Map.Entry<String, String> entry : filter.entrySet()) {
+            String key = entry.getKey();
+            if (!"cid3".equals(key) && !"brandId".equals(key)) {
+                key = "specs." + key + ".keyword";
+            }
+            String value = entry.getValue();
+            queryBuilder.filter(QueryBuilders.termQuery(key, value));
+        }
+        return queryBuilder;
     }
 
     private List<Map<String, Object>> buildSpecificationAgg(Long cid, QueryBuilder basicQuery) {
@@ -226,7 +244,7 @@ public class SearchService {
         for (SpecParam specParam : specParams) {
             String name = specParam.getName();
             queryBuilder.addAggregation(
-                    AggregationBuilders.terms(name).field("specs."+name+".keyword"));
+                    AggregationBuilders.terms(name).field("specs." + name + ".keyword"));
         }
         // 获取聚合结果
         AggregatedPage<Goods> result = template.queryForPage(queryBuilder.build(), Goods.class);
@@ -242,7 +260,7 @@ public class SearchService {
             // add list
             specs.add(map);
         }
-        return  specs;
+        return specs;
     }
 
 
@@ -254,7 +272,7 @@ public class SearchService {
             List<Brand> brands = brandClient.queryBrandByIds(collect);
             return brands;
         } catch (Exception e) {
-            log.error("【搜索服务器异常】",e);
+            log.error("【搜索服务器异常】", e);
             return null;
         }
 
@@ -268,7 +286,7 @@ public class SearchService {
             List<Category> categories = categoryClient.queryCategoryByIds(collect);
             return categories;
         } catch (Exception e) {
-            log.error("【搜索服务器异常】",e);
+            log.error("【搜索服务器异常】", e);
             return null;
         }
     }
