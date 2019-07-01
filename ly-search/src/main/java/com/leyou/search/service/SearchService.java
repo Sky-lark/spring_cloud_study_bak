@@ -219,7 +219,7 @@ public class SearchService {
 
     private QueryBuilder buildBasicQuery(SearchRequest request) {
         BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-        queryBuilder.must(QueryBuilders.matchQuery("key", request.getKey()));
+        queryBuilder.must(QueryBuilders.matchQuery("all", request.getKey()));
         Map<String, String> filter = request.getFilter();
         for (Map.Entry<String, String> entry : filter.entrySet()) {
             String key = entry.getKey();

@@ -6,7 +6,7 @@ spring:
   data:
     elasticsearch:
       cluster-name: elasticsearch
-      cluster-nodes: 111.231.245.114:9300
+      cluster-nodes: kelechen.cn:9300
   jackson:
     default-property-inclusion: non_null
 eureka:

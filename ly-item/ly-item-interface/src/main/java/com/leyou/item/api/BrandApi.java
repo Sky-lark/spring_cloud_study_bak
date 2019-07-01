@@ -18,6 +18,6 @@ public interface BrandApi {
     @GetMapping("brand/{id}")
     Brand queryBrandByid(@PathVariable("id") Long id);
 
-    @GetMapping("brand/ids")
+    @GetMapping("brand/brands")
     List<Brand> queryBrandByIds(@RequestParam("ids") List<Long> ids);
 }
