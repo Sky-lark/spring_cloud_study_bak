@@ -65,6 +65,9 @@ public class PageService {
         context.setVariables(loadModel(spuid));
         // 输出流
         File dest = new File("D:\\Program\\fileouttest", spuid + ".html");
+        if (dest.exists()) {
+            dest.delete();
+        }
         try(PrintWriter write = new PrintWriter(dest, "UTF-8")){
             // 生成html
             templateEngine.process("item",context,write);
@@ -72,5 +75,12 @@ public class PageService {
             log.error("[静态页错误]",e);
         }
 
+    }
+
+    public void deleteHTML(Long spuId) {
+        File dest = new File("D:\\Program\\fileouttest", spuId + ".html");
+        if (dest.exists()) {
+            dest.delete();
+        }
     }
 }

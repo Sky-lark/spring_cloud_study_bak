@@ -50,7 +50,7 @@ public class UploadService {
             return prop.getBaseUrl() + storePath.getFullPath();
         } catch (IOException e) {
             log.error("文件上传失败", e);
-            throw new LyException(ExceptionEnum.UPLOAD_FILE_ERROE);
+            throw new LyException(ExceptionEnum.UPLOAD_FILE_ERROR);
         }
     }
 }

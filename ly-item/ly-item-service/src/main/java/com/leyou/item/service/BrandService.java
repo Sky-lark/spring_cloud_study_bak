@@ -50,12 +50,12 @@ public class BrandService {
     public void saveBrand(Brand brand, List<Long> cids) {
         int count = brandMapper.insert(brand);
         if (count != 1) {
-            throw new LyException(ExceptionEnum.BRAND_SAVE_ERROE);
+            throw new LyException(ExceptionEnum.BRAND_SAVE_ERROR);
         }
         for (Long aLong : cids) {
             count = brandMapper.insertCategoryBrand(aLong, brand.getId());
             if (count != 1) {
-                throw new LyException(ExceptionEnum.BRAND_SAVE_ERROE);
+                throw new LyException(ExceptionEnum.BRAND_SAVE_ERROR);
             }
         }
     }

@@ -1,6 +1,7 @@
-package com.leyou.search.mq;
+package com.leyou.page.mq;
 
-import com.leyou.search.service.SearchService;
+
+import com.leyou.page.service.PageService;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -13,10 +14,10 @@ import org.springframework.stereotype.Component;
 public class ItemListener {
 
     @Autowired
-    private SearchService searchService;
+    private PageService pageService;
 
     @RabbitListener(bindings = @QueueBinding(
-            value =  @Queue(name = "search.item.insert.queue", durable = "true"),
+            value =  @Queue(name = "page.item.insert.queue", durable = "true"),
             exchange = @Exchange(name = "ly.item.exchange",type = ExchangeTypes.TOPIC),
             key = {"item.insert","item.update"}
     ))
@@ -25,12 +26,12 @@ public class ItemListener {
             return;
         }
         // 处理消息，对索引库新增和修改
-        searchService.createOrUpdateIndex(spuId);
+       pageService.createHtml(spuId);
 
     }
 
     @RabbitListener(bindings = @QueueBinding(
-            value =  @Queue(name = "search.item.delete.queue", durable = "true"),
+            value =  @Queue(name = "page.item.delete.queue", durable = "true"),
             exchange = @Exchange(name = "ly.item.exchange",type = ExchangeTypes.TOPIC),
             key = {"item.delete"}
     ))
@@ -38,8 +39,8 @@ public class ItemListener {
         if (spuId == null) {
             return;
         }
-        // 处理消息，对索引库删除
-        searchService.deleteIndex(spuId);
+        // 处理消息，对静态页删除
+        pageService.deleteHTML(spuId);
 
     }
 

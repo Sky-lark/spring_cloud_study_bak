@@ -10,7 +10,9 @@ import com.leyou.item.mapper.SpuDetailMapper;
 import com.leyou.item.mapper.SpuMapper;
 import com.leyou.item.mapper.StockMapper;
 import com.leyou.item.pojo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class GoodsService {
     @Autowired
     private SpuMapper spuMapper;
@@ -34,6 +37,9 @@ public class GoodsService {
     private SkuMapper skuMapper;
     @Autowired
     private StockMapper stockMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     public PageResult<Spu> querySpuPage(Integer page, Integer rows, Boolean saleable, String key) {
         PageHelper.startPage(page, rows);
@@ -95,6 +101,11 @@ public class GoodsService {
             throw new LyException(ExceptionEnum.GOODS_SAVE_ERROR);
         }
         saveSpuAndStock(spu);
+        try {
+            amqpTemplate.convertAndSend("item.insert", spu.getId());
+        }catch (Exception e){
+            log.error("【发送mq消息失败:[item.insert]】：",e);
+        }
     }
 
     private void saveSpuAndStock(Spu spu) {
@@ -190,6 +201,12 @@ public class GoodsService {
         }
         // 新增sku和stock
         saveSpuAndStock(spu);
+        // 发送mq消息
+        try {
+            amqpTemplate.convertAndSend("item.update", spu.getId());
+        }catch (Exception e){
+            log.error("【发送mq消息失败:[item.update]】：",e);
+        }
     }
 
 

@@ -7,7 +7,7 @@ spring:
     virtual-host: /leyou
     host: kelechen.cn
     username: leyou
-    password: Ch1065670082.
+    password: C
 server:
   port: 8084
 eureka:

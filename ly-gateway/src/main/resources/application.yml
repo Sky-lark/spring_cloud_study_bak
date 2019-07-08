@@ -22,7 +22,7 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 5000 # 熔断超时时长 ms
+            timeoutInMilliseconds: 10000 # 熔断超时时长 ms
 ribbon:
   ConnectTimeout: 1000  # ribbon 链接超时时长
   ReadTimeout: 3500   # ribbon 读取超时时长
