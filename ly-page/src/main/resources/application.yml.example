@@ -3,6 +3,11 @@ spring:
     name: page-service
   thymeleaf:
     cache: false
+  rabbitmq:
+    virtual-host: /leyou
+    host: kelechen.cn
+    username: leyou
+    password: Ch1065670082.
 server:
   port: 8084
 eureka:
