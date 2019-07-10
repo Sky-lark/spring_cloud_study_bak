@@ -1,0 +1,20 @@
+server:
+  port: 8086
+spring:
+  application:
+    name: sms-service
+  rabbitmq:
+    host: kelechen.cn
+    username: leyou
+    password:
+    virtual-host: /leyou
+  redis:
+    host: kelechen.cn
+    password:
+
+ly:
+  sms:
+    accessKeyId:
+    accessKeySecret:
+    signName:
+    verifyCodeTemplate:

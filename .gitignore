@@ -7,4 +7,7 @@ gen
 ly-item/ly-item-service/src/main/resources/application.yml
 ly-search/src/main/resources/application.yml
 ly-page/src/main/resources/application.yml
+ly-user/ly-user-service/src/main/resources/application.yml
+ly-sms/src/main/resources/application.yml
+
 

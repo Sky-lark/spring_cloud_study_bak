@@ -1,0 +1,19 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: jdbc:mysql://kelechen.cn:3306/yun6
+    username: root
+    password:
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+  instance:
+    instance:
+      prefer-ip-address: true
+      ip-address: 127.0.0.1
+mybatis:
+  type-aliases-package: com.leyou.user.pojo
