@@ -4,10 +4,10 @@ spring:
   application:
     name: search-service
   rabbitmq:
-    virtual-host: \leyou
+    virtual-host: /leyou
     host: kelechen.cn
     username: leyou
-    password:
+    password: .
   data:
     elasticsearch:
       cluster-name: elasticsearch

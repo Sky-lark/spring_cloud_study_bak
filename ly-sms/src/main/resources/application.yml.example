@@ -6,15 +6,14 @@ spring:
   rabbitmq:
     host: kelechen.cn
     username: leyou
-    password:
+    password: .
     virtual-host: /leyou
   redis:
     host: kelechen.cn
     password:
-
 ly:
   sms:
-    accessKeyId:
+    accessKeyId: LTAImXaxGpmQaWSN
     accessKeySecret:
-    signName:
-    verifyCodeTemplate:
+    signName: kelechen
+    verifyCodeTemplate: SMS_170155159

@@ -24,6 +24,9 @@ public enum ExceptionEnum {
     GOODS_NOT_FOUND(404, "商品没有找到"),
     SPUDETAIL_NOT_FOUND(404, "商品详情没有找到!"),
     SKU_NOT_FOUND(404, "商品SKU没有找到!"),
+    CART_NOT_FOUND(404, "购物车为空!"),
+
+
     GOODS_ID_CAN_NOT_BE_NULL(400,"spu id不能为空"),
     GOODS_UPDATE_ERROR(500,"goods 更新错误"),
     BRAND_SAVE_ERROR(500, "新增品牌失败！"),
